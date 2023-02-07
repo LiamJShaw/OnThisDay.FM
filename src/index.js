@@ -1,48 +1,15 @@
-function getTracks(date) {
+import "./styles/styles.css";
 
-    // Get tracks for specific date
-    // Add first page of tracks to array, from 0 to recenttracks arraySize
-    // If totalPages > 1, increment page and run again
-    // Return array of tracks
+import { getTracks, dateToUnixTime } from './lastfm.js';
 
-    let fromDate = date;
-    let toDate = date + 86399; // 24 hours (-1s) in seconds
-
-    let currentPage = 1;
-    let totalPages = 2; // Placeholder value. Will be replace on the first while run.
-
-    let tracks = [];
-
-    while(currentPage < totalPages) {
-        let currentPageOfTracks = fetch(
-            `http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=legendeater&page=${currentPage}&from=${fromDate}&to=${toDate}&limit=200&api_key=d1fe8154dbbbd2656d9748992effc9ca&format=json`, {mode: 'cors'})
-        .then(function(response) {
-            totalPages = 1;
-            return response.json();
-        })
-        .then(function(response) {
-            tracks.concat(response.tracks.recenttracks);
-            console.log("Current tracklist: " + tracks);
-            return response;
-        })
-    }
-}
-
-const dateToUnixTime = (dateString) => {
-    // TODO: Check it's a valid date in the correct format?
-    const date = new Date(dateString);
-    const timeInMillisecond = date.getTime();
-    const unixTimestamp = Math.floor(date.getTime() / 1000);
-    return unixTimestamp;
-}
+let tracksContainer = document.querySelector(".tracks");
 
 const goButton = document.querySelector(".go-button");
 
 goButton.addEventListener("click", () => {
 
     // for each track, add the name as a <p> to .tracks
-
-    let tracksContainer = document.querySelector(".tracks");
+    
     tracksContainer.innerHTML = "";
 
     let datePicker = document.querySelector(".date");
@@ -50,13 +17,34 @@ goButton.addEventListener("click", () => {
 
     let unixDate = dateToUnixTime(datePicked);
 
-    let tracks = getTracks(unixDate)
-    .then(function(tracks) {
-        for (let i = 0; i < 51; i++) {
-            const track = document.createElement('p');
-            track.textContent = tracks.recenttracks.track[i].name
-            tracksContainer.appendChild(track);
-        }
-    });
+    let currentTracks = getTracks(unixDate);
+
+    console.log(currentTracks);
+
+    for (let i = 0; i < 10; i++) {
+        const trackP = document.createElement('p');
+        trackP.textContent = "Track: " + tracks[i];
+        tracksContainer.appendChild(trackP);
+    }
 });
 
+
+
+// OKAY! So no more Spotify API. Learn web scraping and get the spotify url from this:
+
+// <a class="
+// hidden-xs play-this-track-playlink play-this-track-playlink--spotify
+        
+// js-playlink
+
+// href="https://open.spotify.com/track/42Y6p0Kc3suygNBwWklv2T" 
+//   target="_blank" data-playlink-affiliate="spotify" data-spotify-id="42Y6p0Kc3suygNBwWklv2T" 
+//   data-spotify-url="https://open.spotify.com/track/42Y6p0Kc3suygNBwWklv2T" data-track-name="Baby Criminal" 
+//   data-track-url="/music/Viagra+Boys/_/Baby+Criminal" 
+//   data-artist-name="Viagra Boys" data-artist-url="/music/Viagra+Boys" 
+//   title="Play on Spotify" data-single-track="" data-analytics-action="PlayTrackOnPage" 
+//   data-analytics-label="spotify">
+// Spotify
+// </a>
+
+// BUT not everything has the link, so show in the GUI what is linked in the copypasta and what isn't
