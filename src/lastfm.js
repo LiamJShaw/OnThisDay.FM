@@ -9,45 +9,35 @@ export function getTracks(date) {
 
     let tracks = [];
 
-    while(currentPage < totalPages) {
+    // while(currentPage < totalPages) {
 
-        let currentPageOfTracks = fetch(`http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks
-                                            &user=legendeater
-                                            &page=${currentPage}
-                                            &from=${fromDate}
-                                            &to=${toDate}
-                                            &limit=200
-                                            &api_key=d1fe8154dbbbd2656d9748992effc9ca
-                                            &format=json`, 
-                                            {mode: 'cors'}
-                                        )
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(response) {
+    let currentPageOfTracks = fetch(`http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks
+                                        &user=legendeater
+                                        &page=${currentPage}
+                                        &from=${fromDate}
+                                        &to=${toDate}
+                                        &limit=200
+                                        &api_key=d1fe8154dbbbd2656d9748992effc9ca
+                                        &format=json`, 
+                                        {mode: 'cors'}
+                                    )
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(response) {
 
-            console.log(response);
+        totalPages = response.recenttracks['@attr'].totalPages;
 
-            totalPages = response.recenttracks['@attr'].totalPages;
+        // for each track in tracks, add the title and artist as an object
+        for (let i = 0; i < response.recenttracks.track.length; i++) {
 
-            // for each track in tracks, add the title and artist as an object
-            for (let i = 0; i < response.recenttracks.track.length; i++) {
+            tracks.push({track: response.recenttracks.track[i].name, 
+                        artist: response.recenttracks.track[i].artist["#text"]
+                    });
+        }
+    });
 
-                tracks.push({track: response.recenttracks.track[i].name, 
-                            artist: response.recenttracks.track[i].artist["#text"]
-                        });
-            }
-
-            return response;
-        })
-        .then(function(response) {
-
-            console.log(response);
-            return tracks;
-        });
-
-        currentPage++;
-    }        
+    return tracks;
 }
 
 // Get all tracks for every instance of a date through the years, from today back to 2000
