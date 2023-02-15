@@ -1,5 +1,42 @@
 import "./styles/styles.css";
 
+// Spotify
+import SpotifyWebApi from 'spotify-web-api-js';
+
+let spotify = new SpotifyWebApi();
+
+var client_id = '74ac949ca587402484dcef1408b4d7f3';
+var client_secret = '313a2c15fc844ca5bc22755572874ee7';
+
+var authOptions = {
+  url: 'https://accounts.spotify.com/api/token',
+  headers: {
+    'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64'))
+  },
+  form: {
+    grant_type: 'client_credentials'
+  },
+  json: true
+};
+
+request.post(authOptions, function(error, response, body) {
+  if (!error && response.statusCode === 200) {
+    var token = body.access_token;
+    spotify.setAccessToken(token);
+  }
+});
+
+spotify.getArtistAlbums('43ZHCT0cAZBISjO8DG9PnE').then(
+    function (data) {
+      console.log('Artist albums', data);
+    },
+    function (err) {
+      console.error(err);
+    }
+  );
+
+// Spotify above here
+
 let tracksContainer = document.querySelector(".tracks");
 
 // Last.FM API

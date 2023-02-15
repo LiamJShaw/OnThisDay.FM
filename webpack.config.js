@@ -24,4 +24,9 @@ module.exports = {
             },
         ],
     },
+    resolve: {
+        fallback: {
+          "Buffer": require.resolve('buffer/'),
+        }
+    }
 };
