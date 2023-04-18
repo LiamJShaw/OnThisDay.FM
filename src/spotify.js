@@ -33,32 +33,21 @@ export async function searchTrack(title, artist, album, market = "US") {
   return null;
 }
 
-// export async function searchMultipleTracks(tracksToSearch) {
-//   // Perform the searches and store the results in an array
-//   const searchResults = [];
-
-//   for (const track of tracksToSearch) {
-
-//     console.log(track);
-
-//     const spotifyUrl = await searchTrack(track.title, track.artist, track.album);
-//     searchResults.push({ title: track.title, artist: track.artist, album:track.album, spotifyUrl: spotifyUrl });
-//   }
-
-//   return searchResults;
-// }
-
 export async function searchMultipleTracks(tracksToSearch) {
     const searchResults = [];
 
     for (const track of tracksToSearch) {
+
       const { title, artist, album } = track;
+
       const trackUrl = await searchTrack(title, artist, album);
+      
       if (trackUrl) {
         searchResults.push({ title, artist, album, url: trackUrl });
       } else {
         console.log(`Could not find track: ${title} by ${artist}`);
       }
+      
     }
 
     return searchResults;

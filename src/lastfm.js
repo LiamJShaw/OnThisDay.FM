@@ -1,8 +1,10 @@
 // Get all tracks for a specific date
-export function getTracks(date) {
+export function getTracks(date, user) {
 
-    let fromDate = date;
-    let toDate = date + 86399; // 24 hours (-1s) in seconds
+    let unixDate = dateToUnixTime(date);
+
+    let fromDate = unixDate;
+    let toDate = unixDate + 86399; // 24 hours (-1s) in seconds
 
     let currentPage = 1;
     let totalPages = 2; // Placeholder value. Will be replace on the first while run.
@@ -12,7 +14,7 @@ export function getTracks(date) {
     // while(currentPage < totalPages) {
 
     return fetch(`http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks
-                                        &user=legendeater
+                                        &user=${user}
                                         &page=${currentPage}
                                         &from=${fromDate}
                                         &to=${toDate}
@@ -32,7 +34,7 @@ export function getTracks(date) {
         for (let i = 0; i < response.recenttracks.track.length; i++) {
 
             tracks.push({ 
-                track: response.recenttracks.track[i].name, 
+                title: response.recenttracks.track[i].name, 
                 artist: response.recenttracks.track[i].artist["#text"],
                 album: response.recenttracks.track[i].album["#text"],
             });
