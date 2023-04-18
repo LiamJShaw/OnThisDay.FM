@@ -11,7 +11,7 @@ export function getTracks(date) {
 
     // while(currentPage < totalPages) {
 
-    let currentPageOfTracks = fetch(`http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks
+    return fetch(`http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks
                                         &user=legendeater
                                         &page=${currentPage}
                                         &from=${fromDate}
@@ -31,13 +31,16 @@ export function getTracks(date) {
         // for each track in tracks, add the title and artist as an object
         for (let i = 0; i < response.recenttracks.track.length; i++) {
 
-            tracks.push({track: response.recenttracks.track[i].name, 
-                        artist: response.recenttracks.track[i].artist["#text"]
-                    });
+            tracks.push({ 
+                track: response.recenttracks.track[i].name, 
+                artist: response.recenttracks.track[i].artist["#text"],
+                album: response.recenttracks.track[i].album["#text"],
+            });
         }
-    });
 
     return tracks;
+        
+    });
 }
 
 // Get all tracks for every instance of a date through the years, from today back to 2000
