@@ -13,7 +13,7 @@ export function getTracks(date, user) {
 
     // while(currentPage < totalPages) {
 
-    return fetch(`http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks
+    return fetch(`https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks
                                         &user=${user}
                                         &page=${currentPage}
                                         &from=${fromDate}
