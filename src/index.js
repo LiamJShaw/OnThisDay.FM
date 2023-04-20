@@ -49,31 +49,3 @@ function updateUI(searchResults) {
       tracksContainer.appendChild(card);
     }
   }
-  
-
-// Single track
-
-// searchTrack("Frogstrap", "Viagra Boys", "Street Worms")
-// .then((searchResults) => {
-//       console.log("Track:", searchResults);
-//     })
-//     .catch((error) => {
-//       console.error("Error:", error);
-//     });
-
-
-// Multiple tracks
-
-// const tracksToSearch = [
-//     { title:"Frogstrap", artist:"Viagra Boys", album:"Street Worms" },
-//     { title:"Sports", artist:"Viagra Boys", album:"Street Worms" },
-//     { title:"Troglodyte", artist:"Viagra Boys", album:"Cave World (Deluxe)" },
-// ]
-
-// searchMultipleTracks(tracksToSearch)
-// .then((searchResults) => {
-//     console.log("Multiple Tracks:", searchResults);
-//   })
-//   .catch((error) => {
-//     console.error("Error:", error);
-//   });

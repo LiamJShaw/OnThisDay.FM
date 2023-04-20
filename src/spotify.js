@@ -4,10 +4,10 @@ const clientId = "74ac949ca587402484dcef1408b4d7f3";
 const clientSecret = "313a2c15fc844ca5bc22755572874ee7";
 const tokenManager = new SpotifyTokenManager(clientId, clientSecret);
 
-export async function searchTrack(title, artist, album, market = "US") {
+export async function searchTrack(title, artist, album, market = "GB") {
   const accessToken = await tokenManager.getAccessToken();
 
-  const query = `track:${title} artist:${artist} album:${album}`;
+  const query = `track:${title} artist:${artist}` + (album ? ` album:${album}` : '');
   const headers = {
     Authorization: `Bearer ${accessToken}`,
   };
@@ -32,6 +32,7 @@ export async function searchTrack(title, artist, album, market = "US") {
 
   return null;
 }
+
 
 export async function searchMultipleTracks(tracksToSearch) {
     const searchResults = [];
