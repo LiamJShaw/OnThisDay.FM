@@ -36,7 +36,7 @@ export function getTracks(date, user) {
             tracks.push({ 
                 title: response.recenttracks.track[i].name, 
                 artist: response.recenttracks.track[i].artist["#text"],
-                // album: response.recenttracks.track[i].album["#text"],
+                album: response.recenttracks.track[i].album["#text"],
             });
         }
 

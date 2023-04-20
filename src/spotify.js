@@ -4,52 +4,105 @@ const clientId = "74ac949ca587402484dcef1408b4d7f3";
 const clientSecret = "313a2c15fc844ca5bc22755572874ee7";
 const tokenManager = new SpotifyTokenManager(clientId, clientSecret);
 
-export async function searchTrack(title, artist, album, market = "GB") {
-  const accessToken = await tokenManager.getAccessToken();
 
-  const query = `track:${title} artist:${artist}` + (album ? ` album:${album}` : '');
-  const headers = {
-    Authorization: `Bearer ${accessToken}`,
-  };
-  const params = new URLSearchParams({
-    q: query,
-    type: "track",
-    limit: 1,
-    market: market,
-  });
+function stringSimilarity(a, b) {
+  let similarity = 0;
+  const minLength = Math.min(a.length, b.length);
 
-  const response = await fetch(`https://api.spotify.com/v1/search?${params}`, {
-    headers: headers,
-  });
-
-  if (response.status === 200) {
-    const data = await response.json();
-    const tracks = data.tracks.items;
-    if (tracks.length > 0) {
-      return tracks[0].external_urls.spotify;
+  for (let i = 0; i < minLength; i++) {
+    if (a[i].toLowerCase() === b[i].toLowerCase()) {
+      similarity++;
     }
   }
 
-  return null;
+  return similarity / minLength;
 }
 
+export async function searchTrack(title, artist, album, market = 'US') {
+  const accessToken = await tokenManager.getAccessToken();
 
-export async function searchMultipleTracks(tracksToSearch) {
-    const searchResults = [];
+  const headers = {
+    Authorization: `Bearer ${accessToken}`,
+  };
 
-    for (const track of tracksToSearch) {
+  async function search(query) {
+    const params = new URLSearchParams({
+      q: query,
+      type: 'track',
+      limit: 10,
+      market: market,
+    });
 
-      const { title, artist, album } = track;
+    const response = await fetch(`https://api.spotify.com/v1/search?${params}`, {
+      headers: headers,
+    });
 
-      const trackUrl = await searchTrack(title, artist, album);
-      
-      if (trackUrl) {
-        searchResults.push({ title, artist, album, url: trackUrl });
-      } else {
-        console.log(`Could not find track: ${title} by ${artist}`);
-      }
-      
+    if (response.status === 200) {
+      const data = await response.json();
+      return data.tracks.items;
     }
 
-    return searchResults;
+    return [];
+  }
+
+  function selectBestTrack(tracks) {
+    let bestTrack = null;
+    let bestSimilarity = 0;
+    let bestPopularity = 0;
+
+    for (const track of tracks) {
+      const foundTitle = track.name.toLowerCase();
+      const similarity = stringSimilarity(title.toLowerCase(), foundTitle);
+
+      if (similarity >= 0.85 && (similarity > bestSimilarity || track.popularity > bestPopularity)) {
+        bestTrack = track;
+        bestSimilarity = similarity;
+        bestPopularity = track.popularity;
+      }
+    }
+
+    return bestTrack;
+  }
+
+  const queryWithAlbum = `track:${title} artist:${artist} album:${album}`;
+  const tracksWithAlbum = await search(queryWithAlbum);
+  let foundTrack = selectBestTrack(tracksWithAlbum);
+
+  if (!foundTrack) {
+    console.error(`${title} by ${artist} not found with album. Trying without album...`);
+
+    const queryWithoutAlbum = `track:${title} artist:${artist}`;
+    const tracksWithoutAlbum = await search(queryWithoutAlbum);
+    foundTrack = selectBestTrack(tracksWithoutAlbum);
+  }
+
+  if (foundTrack) {
+    console.log(`Found track: "${foundTrack.name}" by "${foundTrack.artists[0].name}"`);
+    return {
+      url: foundTrack.external_urls.spotify,
+      preview_url: foundTrack.preview_url,
+    };
+  } else {
+    console.error(`${title} by ${artist} not found`);
+    return { url: null, preview_url: null };
+  }
+}
+
+export async function searchMultipleTracks(tracksToSearch) {
+  const searchResults = [];
+
+  for (const track of tracksToSearch) {
+    const { title, artist, album } = track;
+    const { url, preview_url } = await searchTrack(title, artist, album);
+
+    searchResults.push({
+      title,
+      artist,
+      album,
+      url,
+      preview_url,
+    });
+  }
+
+  return searchResults;
 }

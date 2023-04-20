@@ -30,22 +30,40 @@ async function main() {
 }
 
 function updateUI(searchResults) {
-    tracksContainer.innerHTML = "";
-  
-    for (let i = 0; i < searchResults.length; i++) {
-      const card = document.createElement('div');
-      card.className = 'card';
-  
-      const title = document.createElement('h3');
-      title.textContent = searchResults[i].artist + " - " + searchResults[i].title;
-      card.appendChild(title);
-  
-      const link = document.createElement('a');
+  tracksContainer.innerHTML = "";
+
+  for (let i = 0; i < searchResults.length; i++) {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const playButton = document.createElement("button");
+    playButton.className = "play-button";
+    playButton.innerHTML = "&#9658;"; // Unicode for play icon
+    card.appendChild(playButton);
+
+    const title = document.createElement("h3");
+    title.textContent = searchResults[i].artist + " - " + searchResults[i].title;
+    card.appendChild(title);
+
+    if (searchResults[i].url) {
+      const link = document.createElement("a");
       link.href = searchResults[i].url;
-      link.textContent = 'Listen on Spotify';
-      link.target = '_blank';
+      link.textContent = "Listen on Spotify";
+      link.target = "_blank";
       card.appendChild(link);
-  
-      tracksContainer.appendChild(card);
     }
+
+    const audio = document.createElement("audio");
+    audio.src = searchResults[i].preview_url;
+    audio.preload = "none";
+    card.appendChild(audio);
+
+    playButton.addEventListener("click", () => {
+      audio.paused ? audio.play() : audio.pause();
+      playButton.innerHTML = audio.paused ? "&#9658;" : "&#10074;&#10074;"; // Update play icon to pause icon when playing
+    });
+
+    tracksContainer.appendChild(card);
   }
+}
+
