@@ -18,11 +18,15 @@ async function main() {
 
     const tracksToSearch = await getAllTracks(username, datePicked);
 
+    console.log("Last.fm results ", tracksToSearch);
+
     // Search for tracks on Spotify
-    // const searchResults = await searchMultipleTracks(tracksToSearch);
+    const searchResults = await searchMultipleTracks(tracksToSearch);
+
+    console.log("Full Spotify Results", searchResults);
 
     // Update the UI with the search results
-    // updateUI(searchResults);
+    updateUI(searchResults);
 }
 
 // Get All Tracks TEST CODE

@@ -1,4 +1,4 @@
-// const tracksContainer = document.querySelector(".tracks");
+const tracksContainer = document.querySelector(".tracks");
 
 // export async function updateUI(searchResults) {
 
@@ -36,61 +36,25 @@
 //   }
   
 
-const tracksContainer = document.querySelector(".tracks");
-
-export async function updateUI(searchResults) {
-  tracksContainer.innerHTML = "";
-
-  Object.entries(searchResults).forEach(([year, tracks]) => {
-    const yearElement = document.createElement("h2");
-    yearElement.textContent = year;
-    yearElement.classList.add("collapsible");
-    yearElement.addEventListener("click", function () {
-      this.classList.toggle("active");
-      const content = this.nextElementSibling;
-      if (content.style.maxHeight) {
-        content.style.maxHeight = null;
-      } else {
-        content.style.maxHeight = content.scrollHeight + "px";
-      }
+export function updateUI(tracksByYear) {
+  
+    tracksContainer.innerHTML = "";
+  
+    const years = Object.keys(tracksByYear).reverse();
+  
+    years.forEach((year) => {
+      const tracks = tracksByYear[year].reverse();
+      const yearContainer = document.createElement("div");
+      yearContainer.classList.add("year-container");
+      yearContainer.innerHTML = `<h2>${year}</h2>`;
+  
+      tracks.forEach((track) => {
+        const trackContainer = document.createElement("div");
+        trackContainer.classList.add("track-container");
+        trackContainer.innerHTML = `<p><strong>${track.title}</strong> - ${track.artist}</p>`;
+        yearContainer.appendChild(trackContainer);
+      });
+  
+      tracksContainer.appendChild(yearContainer);
     });
-
-    const trackListElement = document.createElement("div");
-    trackListElement.classList.add("tracks");
-
-    tracks.forEach((track) => {
-      const { title, artist, album, url } = track;
-      const trackElement = document.createElement("div");
-      trackElement.classList.add("card");
-
-      const titleElement = document.createElement("h3");
-      titleElement.textContent = title;
-
-      const artistElement = document.createElement("p");
-      artistElement.textContent = artist;
-
-      const albumElement = document.createElement("p");
-      albumElement.textContent = album;
-
-      const listenLinkElement = document.createElement("p");
-      const listenLinkAnchor = document.createElement("a");
-      listenLinkAnchor.textContent = "Listen on Spotify";
-      listenLinkAnchor.href = url;
-      listenLinkAnchor.target = "_blank";
-      listenLinkElement.appendChild(listenLinkAnchor);
-
-      trackElement.appendChild(titleElement);
-      trackElement.appendChild(artistElement);
-      trackElement.appendChild(albumElement);
-      trackElement.appendChild(listenLinkElement);
-      trackListElement.appendChild(trackElement);
-    });
-
-    const yearContainer = document.createElement("div");
-    yearContainer.classList.add("year-container");
-    yearContainer.appendChild(yearElement);
-    yearContainer.appendChild(trackListElement);
-
-    tracksContainer.appendChild(yearContainer);
-  });
-}
+  }

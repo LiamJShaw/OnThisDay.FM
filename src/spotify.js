@@ -92,10 +92,10 @@ export async function searchTrack(title, artist, album, market = 'US') {
 export async function searchMultipleTracks(tracksByYear) {
   const updatedTracksByYear = {};
 
-  for (const year in tracksByYear) {
+  for (const [year, tracks] of Object.entries(tracksByYear)) {
     updatedTracksByYear[year] = [];
 
-    for (const track of tracksByYear[year].tracks) {
+    for (const track of tracks) {
       const { title, artist, album } = track;
       const { url, preview_url } = await searchTrack(title, artist, album);
 

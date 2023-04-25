@@ -49,24 +49,51 @@ export async function getTracks(user, fromDate, toDate) {
   
 
 // Get all tracks for every instance of a date through the years, from chosen date back to 2002
+// export async function getAllTracks(user, date) {
+//     const currentDate = new Date(date);
+//     const years = Array.from(
+//       { length: currentDate.getFullYear() - 1999 },
+//       (_, i) => 2000 + i
+//     ).reverse();
+  
+//     const allYears = [];
+  
+//     for (const year of years) {
+//       const fromDate = new Date(year, currentDate.getMonth(), currentDate.getDate());
+//       const toDate = new Date(year, currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
+//       const tracks = await getTracks(user, fromDate, toDate);
+//       allYears.push({ year, tracks });
+//     }
+  
+//     const nonEmptyYears = allYears.filter(({ tracks }) => tracks.length > 0);
+
+//     return nonEmptyYears;
+//   }
+  
 export async function getAllTracks(user, date) {
     const currentDate = new Date(date);
     const years = Array.from(
-      { length: currentDate.getFullYear() - 1999 },
-      (_, i) => 2000 + i
-    ).reverse();
-  
+        { length: currentDate.getFullYear() - 1999 },
+        (_, i) => 2000 + i
+    );
+
     const allYears = [];
-  
+
     for (const year of years) {
-      const fromDate = new Date(year, currentDate.getMonth(), currentDate.getDate());
-      const toDate = new Date(year, currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
-      const tracks = await getTracks(user, fromDate, toDate);
-      allYears.push({ year, tracks });
+        const fromDate = new Date(year, currentDate.getMonth(), currentDate.getDate());
+        const toDate = new Date(year, currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
+        const tracks = await getTracks(user, fromDate, toDate);
+        allYears.push({ year, tracks });
     }
-  
+
     const nonEmptyYears = allYears.filter(({ tracks }) => tracks.length > 0);
 
-    return nonEmptyYears;
-  }
+    // Create an object with the years as keys and the tracks arrays as values
+    const tracksByYear = nonEmptyYears.reduce((acc, { year, tracks }) => {
+        acc[year] = tracks;
+        return acc;
+      }, {});
+
+    return tracksByYear;
+}
   
