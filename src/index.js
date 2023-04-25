@@ -18,8 +18,6 @@ async function main() {
 
     const tracksToSearch = await getAllTracks(username, datePicked);
 
-    console.log("Search Results: ", tracksToSearch);
-
     // Search for tracks on Spotify
     // const searchResults = await searchMultipleTracks(tracksToSearch);
 

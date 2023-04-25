@@ -1,3 +1,11 @@
+// Convert a date string to Unix time, required by this API
+const dateToUnixTime = (dateString) => {
+    const date = new Date(dateString);
+    const timeInMs = date.getTime();
+    const unixTimestamp = Math.floor(timeInMs / 1000);
+    return unixTimestamp;
+}
+
 // Get all tracks for a specific date
 export async function getTracks(user, fromDate, toDate) {
 
@@ -48,23 +56,17 @@ export async function getAllTracks(user, date) {
       (_, i) => 2000 + i
     ).reverse();
   
-    const allTracks = [];
+    const allYears = [];
   
     for (const year of years) {
       const fromDate = new Date(year, currentDate.getMonth(), currentDate.getDate());
       const toDate = new Date(year, currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
       const tracks = await getTracks(user, fromDate, toDate);
-      allTracks.push({ year, tracks });
+      allYears.push({ year, tracks });
     }
   
-    return allTracks;
+    const nonEmptyYears = allYears.filter(({ tracks }) => tracks.length > 0);
+
+    return nonEmptyYears;
   }
   
-
-// Convert a date string to Unix time
-const dateToUnixTime = (dateString) => {
-    const date = new Date(dateString);
-    const timeInMs = date.getTime();
-    const unixTimestamp = Math.floor(timeInMs / 1000);
-    return unixTimestamp;
-}
