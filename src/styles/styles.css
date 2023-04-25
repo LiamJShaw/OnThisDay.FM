@@ -1,109 +1,136 @@
-body {
-    font-family: Arial, sans-serif;
-    background-color: #1c1c1c;
-    color: #f1f1f1;
-  }
-  
-  .tracks {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    grid-gap: 20px;
-    width: 100%;
-    max-width: 1000px;
-  }
-  
-  
-  .card {
-    background-color: #2d2d2d;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    border-radius: 4px;
-    padding: 16px;
-    width: 300px;
-  }
-  
-  .card h3 {
-    margin: 0;
-    margin-bottom: 8px;
-    font-size: 18px;
-  }
-  
-  .card a {
-    color: #1db954;
-    text-decoration: none;
-  }
-  
-  .card a:hover {
-    text-decoration: underline;
-  }
-  
-  .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    padding: 0 20px;
-  }
-  
-  .control-panel {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 30px;
-    width: 100%;
-    max-width: 1000px;
-    justify-content: center;
-  }
-  
-  .username,
-  .date {
-    border: none;
-    background-color: #3c3c3c;
-    border-radius: 4px;
-    color: #f1f1f1;
-    padding: 8px 12px;
-    outline: none;
-    font-size: 14px;
-  }
-  
-  .username::placeholder {
-    color: #999;
-  }
-  
-  .go-button {
-    border: none;
-    background-color: #1db954;
-    color: #f1f1f1;
-    font-size: 14px;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    outline: none;
-    transition: background-color 0.3s;
-  }
-  
-  .go-button:hover {
-    background-color: #17a04b;
-  }
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  .play-button {
-    background-color: green;
-    border: none;
-    color: white;
-    font-size: 16px;
-    text-align: center;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    margin-right: 10px;
-    cursor: pointer;
-    outline: none;
-  }
-  
-  
-  @media (max-width: 600px) {
-    .tracks {
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    }
-  }
-  
+body {
+  font-family: Arial, sans-serif;
+  background-color: #1c1c1c;
+  color: #f1f1f1;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 0 20px;
+}
+
+.control-panel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 30px;
+  width: 100%;
+  max-width: 1000px;
+  justify-content: center;
+}
+
+.username,
+.date {
+  border: none;
+  background-color: #3c3c3c;
+  border-radius: 4px;
+  color: #f1f1f1;
+  padding: 8px 12px;
+  outline: none;
+  font-size: 14px;
+}
+
+.username::placeholder {
+  color: #999;
+}
+
+.go-button {
+  border: none;
+  background-color: #1db954;
+  color: #f1f1f1;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.3s;
+}
+
+.go-button:hover {
+  background-color: #17a04b;
+}
+
+.collapsible {
+  background-color: #2d2d2d;
+  color: #f1f1f1;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.active,
+.collapsible:hover {
+  background-color: #1c1c1c;
+}
+
+.tracks {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.card {
+  background-color: #2d2d2d;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  border-radius: 4px;
+  padding: 16px;
+  width: calc((100% - 40px) / 3); /* adjust to fit three cards on each row */
+  margin: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  max-height: 300px;
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+  transform: translateY(-4px);
+}
+
+.card h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.card p {
+  margin: 0;
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 8px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.card .listen-link {
+  margin-top: auto;
+  font-size: 14px;
+}
+
+.card a {
+  color: #1db954;
+  text-decoration: none;
+}

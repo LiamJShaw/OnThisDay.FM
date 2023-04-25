@@ -51,6 +51,7 @@ export async function searchTrack(title, artist, album, market = 'US') {
     let bestPopularity = 0;
 
     for (const track of tracks) {
+      
       const foundTitle = track.name.toLowerCase();
       const similarity = stringSimilarity(title.toLowerCase(), foundTitle);
 
@@ -88,21 +89,25 @@ export async function searchTrack(title, artist, album, market = 'US') {
   }
 }
 
-export async function searchMultipleTracks(tracksToSearch) {
-  const searchResults = [];
+export async function searchMultipleTracks(tracksByYear) {
+  const updatedTracksByYear = {};
 
-  for (const track of tracksToSearch) {
-    const { title, artist, album } = track;
-    const { url, preview_url } = await searchTrack(title, artist, album);
+  for (const year in tracksByYear) {
+    updatedTracksByYear[year] = [];
 
-    searchResults.push({
-      title,
-      artist,
-      album,
-      url,
-      preview_url,
-    });
+    for (const track of tracksByYear[year].tracks) {
+      const { title, artist, album } = track;
+      const { url, preview_url } = await searchTrack(title, artist, album);
+
+      updatedTracksByYear[year].push({
+        title,
+        artist,
+        album,
+        url,
+        preview_url,
+      });
+    }
   }
 
-  return searchResults;
+  return updatedTracksByYear;
 }

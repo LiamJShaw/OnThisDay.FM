@@ -1,61 +1,70 @@
 // Get all tracks for a specific date
-export function getTracks(date, user) {
+export async function getTracks(user, fromDate, toDate) {
 
-    let unixDate = dateToUnixTime(date);
-
-    let fromDate = unixDate;
-    let toDate = unixDate + 86399; // 24 hours (-1s) in seconds
+    let unixFromDate = dateToUnixTime(fromDate);
+    let unixToDate = dateToUnixTime(toDate);
 
     let currentPage = 1;
     let totalPages = 2; // Placeholder value. Will be replace on the first while run.
 
-    let tracks = [];
+    const tracks = [];
 
-    // while(currentPage < totalPages) {
-
-    return fetch(`https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks
+    while(currentPage < totalPages) {
+        const response = await fetch(`https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks
                                         &user=${user}
                                         &page=${currentPage}
-                                        &from=${fromDate}
-                                        &to=${toDate}
+                                        &from=${unixFromDate}
+                                        &to=${unixToDate}
                                         &limit=200
                                         &api_key=d1fe8154dbbbd2656d9748992effc9ca
                                         &format=json`, 
                                         {mode: 'cors'}
-                                    )
-    .then(function(response) {
-        return response.json();
-    })
-    .then(function(response) {
+                                    );
 
-        totalPages = response.recenttracks['@attr'].totalPages;
+        const data = await response.json();
 
-        // for each track in tracks, add the title and artist as an object
-        for (let i = 0; i < response.recenttracks.track.length; i++) {
+        totalPages = parseInt(data.recenttracks['@attr'].totalPages);
 
-            tracks.push({ 
-                title: response.recenttracks.track[i].name, 
-                artist: response.recenttracks.track[i].artist["#text"],
-                album: response.recenttracks.track[i].album["#text"],
-            });
+        for (let i = 0; i < data.recenttracks.track.length; i++) {
+        tracks.push({ 
+            title: data.recenttracks.track[i].name, 
+            artist: data.recenttracks.track[i].artist['#text'],
+            album: data.recenttracks.track[i].album['#text'],
+        });
         }
 
-    return tracks;
-        
-    });
-}
+        currentPage++;
+    }
 
-// Get all tracks for every instance of a date through the years, from today back to 2000
+    return tracks;
+}
+  
+
+// Get all tracks for every instance of a date through the years, from chosen date back to 2002
+export async function getAllTracks(user, date) {
+    const currentDate = new Date(date);
+    const years = Array.from(
+      { length: currentDate.getFullYear() - 1999 },
+      (_, i) => 2000 + i
+    ).reverse();
+  
+    const allTracks = [];
+  
+    for (const year of years) {
+      const fromDate = new Date(year, currentDate.getMonth(), currentDate.getDate());
+      const toDate = new Date(year, currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
+      const tracks = await getTracks(user, fromDate, toDate);
+      allTracks.push({ year, tracks });
+    }
+  
+    return allTracks;
+  }
+  
 
 // Convert a date string to Unix time
-export const dateToUnixTime = (dateString) => {
+const dateToUnixTime = (dateString) => {
     const date = new Date(dateString);
     const timeInMs = date.getTime();
     const unixTimestamp = Math.floor(timeInMs / 1000);
     return unixTimestamp;
 }
-
-// Take a year off a Unix date
-// 31,536,000 seconds in a year
-
-
