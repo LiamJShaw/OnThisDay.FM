@@ -82,3 +82,12 @@ body {
 .track-container strong {
   color: #4CAF50;
 }
+
+.track-container a {
+  color: #53D769;
+  text-decoration: none;
+}
+
+.track-container a:hover {
+  text-decoration: underline;
+}

@@ -36,8 +36,30 @@ const tracksContainer = document.querySelector(".tracks");
 //   }
   
 
-export function updateUI(tracksByYear) {
+// export function updateUI(tracksByYear) {
   
+//     tracksContainer.innerHTML = "";
+  
+//     const years = Object.keys(tracksByYear).reverse();
+  
+//     years.forEach((year) => {
+//       const tracks = tracksByYear[year].reverse();
+//       const yearContainer = document.createElement("div");
+//       yearContainer.classList.add("year-container");
+//       yearContainer.innerHTML = `<h2>${year}</h2>`;
+  
+//       tracks.forEach((track) => {
+//         const trackContainer = document.createElement("div");
+//         trackContainer.classList.add("track-container");
+//         trackContainer.innerHTML = `<p><strong>${track.title}</strong> - ${track.artist}</p>`;
+//         yearContainer.appendChild(trackContainer);
+//       });
+  
+//       tracksContainer.appendChild(yearContainer);
+//     });
+//   }
+
+export function updateUI(tracksByYear) {
     tracksContainer.innerHTML = "";
   
     const years = Object.keys(tracksByYear).reverse();
@@ -51,10 +73,16 @@ export function updateUI(tracksByYear) {
       tracks.forEach((track) => {
         const trackContainer = document.createElement("div");
         trackContainer.classList.add("track-container");
-        trackContainer.innerHTML = `<p><strong>${track.title}</strong> - ${track.artist}</p>`;
+        const link = document.createElement("a");
+        link.href = track.url;
+        link.target = "_blank";
+        link.textContent = track.title;
+        trackContainer.appendChild(link);
+        trackContainer.innerHTML += ` - ${track.artist}`;
         yearContainer.appendChild(trackContainer);
       });
   
       tracksContainer.appendChild(yearContainer);
     });
   }
+  
