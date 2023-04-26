@@ -33,12 +33,33 @@ export async function getTracks(user, fromDate, toDate) {
 
         totalPages = parseInt(data.recenttracks['@attr'].totalPages);
 
+
+        // The Last.fm API returns the currently playing track as the first element of every result. 
+        // We only want this if the user wants the results for today.
+        const today = new Date();
+
+        if (Array.isArray(data.recenttracks.track)) {
+            if (data.recenttracks.track.length > 0 && data.recenttracks.track[0]["@attr"] && data.recenttracks.track[0]["@attr"].nowplaying === "true") {
+
+                if (!(fromDate.toDateString() === today.toDateString())) {
+                    // remove from array
+                    data.recenttracks.track = data.recenttracks.track.slice(1);
+                    console.log("Removed now playing track");
+                }
+
+            }
+        } else {
+            if (data.recenttracks.track["@attr"] && data.recenttracks.track["@attr"].nowplaying === "true") {
+                // delete object? make empty?
+            }
+        }
+
         for (let i = 0; i < data.recenttracks.track.length; i++) {
-        tracks.push({ 
-            title: data.recenttracks.track[i].name, 
-            artist: data.recenttracks.track[i].artist['#text'],
-            album: data.recenttracks.track[i].album['#text'],
-        });
+            tracks.push({ 
+                title: data.recenttracks.track[i].name, 
+                artist: data.recenttracks.track[i].artist['#text'],
+                album: data.recenttracks.track[i].album['#text'],
+            });
         }
 
         currentPage++;
@@ -46,29 +67,14 @@ export async function getTracks(user, fromDate, toDate) {
 
     return tracks;
 }
-  
 
-// Get all tracks for every instance of a date through the years, from chosen date back to 2002
-// export async function getAllTracks(user, date) {
-//     const currentDate = new Date(date);
-//     const years = Array.from(
-//       { length: currentDate.getFullYear() - 1999 },
-//       (_, i) => 2000 + i
-//     ).reverse();
-  
-//     const allYears = [];
-  
-//     for (const year of years) {
-//       const fromDate = new Date(year, currentDate.getMonth(), currentDate.getDate());
-//       const toDate = new Date(year, currentDate.getMonth(), currentDate.getDate(), 23, 59, 59);
-//       const tracks = await getTracks(user, fromDate, toDate);
-//       allYears.push({ year, tracks });
-//     }
-  
-//     const nonEmptyYears = allYears.filter(({ tracks }) => tracks.length > 0);
+function isToday(dateString) {
+    
+    
 
-//     return nonEmptyYears;
-//   }
+
+    return date.toDateString() === today.toDateString();
+}
   
 export async function getAllTracks(user, date) {
     const currentDate = new Date(date);
@@ -96,4 +102,3 @@ export async function getAllTracks(user, date) {
 
     return tracksByYear;
 }
-  

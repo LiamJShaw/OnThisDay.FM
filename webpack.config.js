@@ -27,6 +27,9 @@ module.exports = {
     resolve: {
         fallback: {
           "Buffer": require.resolve('buffer/'),
+          "fs": false,
+          "path": false,
+          "os": false
         }
     }
 };

@@ -1,7 +1,10 @@
 import SpotifyTokenManager from './spotifyTokenManager.js';
 
-const clientId = process.env.SPOTIFY_CLIENT_ID;
-const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
+const clientId = "74ac949ca587402484dcef1408b4d7f3";
+const clientSecret = "313a2c15fc844ca5bc22755572874ee7";
+
+// const clientId = process.env.SPOTIFY_CLIENT_ID;
+// const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
 const tokenManager = new SpotifyTokenManager(clientId, clientSecret);
 
