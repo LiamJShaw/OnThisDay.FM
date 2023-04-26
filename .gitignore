@@ -1,3 +1,7 @@
+/.vscode
 /node_modules
 .env
 
+https://api.spotify.com/v1/search?q=track%3AGematria+%28The+Killing+Name%29+artist%3ASlipknot+album%3AThe+Studio+Album+Collection+1999+-+2008&type=track&limit=10&market=US
+
+https://api.spotify.com/v1/search?q=track%3AGematria+%28The+Killing+Name%29+artist%3ASlipknot+album%3AThe+Studio+Album+Collection+1999+-+2008&type=track&limit=10&market=US

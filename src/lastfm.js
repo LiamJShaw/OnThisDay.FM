@@ -33,33 +33,49 @@ export async function getTracks(user, fromDate, toDate) {
 
         totalPages = parseInt(data.recenttracks['@attr'].totalPages);
 
+        
 
         // The Last.fm API returns the currently playing track as the first element of every result. 
         // We only want this if the user wants the results for today.
+
+        console.log(data);
+
         const today = new Date();
 
         if (Array.isArray(data.recenttracks.track)) {
             if (data.recenttracks.track.length > 0 && data.recenttracks.track[0]["@attr"] && data.recenttracks.track[0]["@attr"].nowplaying === "true") {
 
                 if (!(fromDate.toDateString() === today.toDateString())) {
-                    // remove from array
+                    // Remove the now playing track from the array
                     data.recenttracks.track = data.recenttracks.track.slice(1);
-                    console.log("Removed now playing track");
                 }
 
             }
+
+            for (let i = 0; i < data.recenttracks.track.length; i++) {
+                tracks.push({ 
+                    title: data.recenttracks.track[i].name, 
+                    artist: data.recenttracks.track[i].artist['#text'],
+                    album: data.recenttracks.track[i].album['#text'],
+                });
+            }
+
         } else {
             if (data.recenttracks.track["@attr"] && data.recenttracks.track["@attr"].nowplaying === "true") {
-                // delete object? make empty?
-            }
-        }
-
-        for (let i = 0; i < data.recenttracks.track.length; i++) {
-            tracks.push({ 
-                title: data.recenttracks.track[i].name, 
-                artist: data.recenttracks.track[i].artist['#text'],
-                album: data.recenttracks.track[i].album['#text'],
-            });
+                if (fromDate.toDateString() === today.toDateString()) {
+                    tracks.push({
+                        title: data.recenttracks.track.name,
+                        artist: data.recenttracks.track.artist['#text'],
+                        album: data.recenttracks.track.album['#text'],
+                    });
+                }
+            } else {
+                tracks.push({
+                    title: data.recenttracks.track.name,
+                    artist: data.recenttracks.track.artist['#text'],
+                    album: data.recenttracks.track.album['#text'],
+                });
+            }            
         }
 
         currentPage++;
