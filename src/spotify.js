@@ -5,6 +5,7 @@ const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
 const tokenManager = new SpotifyTokenManager(clientId, clientSecret);
 
+
 function stringSimilarity(a, b) {
   let similarity = 0;
   const minLength = Math.min(a.length, b.length);

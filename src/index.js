@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 import "./styles/styles.css";
 
 import {searchTrack, searchMultipleTracks } from "./spotify";
