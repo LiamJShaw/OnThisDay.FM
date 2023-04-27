@@ -37,9 +37,6 @@ export async function getTracks(user, fromDate, toDate) {
 
         // The Last.fm API returns the currently playing track as the first element of every result. 
         // We only want this if the user wants the results for today.
-
-        console.log(data);
-
         const today = new Date();
 
         if (Array.isArray(data.recenttracks.track)) {
@@ -83,16 +80,11 @@ export async function getTracks(user, fromDate, toDate) {
 
     return tracks;
 }
-
-function isToday(dateString) {
-    
-    
-
-
-    return date.toDateString() === today.toDateString();
-}
   
 export async function getAllTracks(user, date) {
+
+    console.log("Last.FM search started");
+
     const currentDate = new Date(date);
     const years = Array.from(
         { length: currentDate.getFullYear() - 1999 },

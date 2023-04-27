@@ -32,18 +32,36 @@ body {
   outline: none;
 }
 
-.go-button {
-  background-color: #4CAF50;
+.fetch {
+  background-color: #D51007;
+}
+
+.fetch:hover {
+  background-color: #d51107b6;
+}
+
+.export {
+  background-color: #1DB954;
+}
+
+.export:hover {
+  background-color: #1db954e1;
+}
+
+.button:disabled {
+  color: #1d1d1d;
+  background-color: #CCCCCC;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.button {
   border: none;
   border-radius: 5px;
   color: #f5f5f5;
   cursor: pointer;
   font-size: 16px;
   padding: 10px 20px;
-}
-
-.go-button:hover {
-  background-color: #3e8e41;
 }
 
 .tracks {

@@ -59,7 +59,7 @@ export async function searchTrack(title, artist, album, market = 'US') {
       const foundTitle = track.name.toLowerCase();
       const similarity = stringSimilarity(title.toLowerCase(), foundTitle);
 
-      if (similarity >= 0.85 && (similarity > bestSimilarity || track.popularity > bestPopularity)) {
+      if (similarity >= 0.51 && (similarity > bestSimilarity || track.popularity > bestPopularity)) {
         bestTrack = track;
         bestSimilarity = similarity;
         bestPopularity = track.popularity;
@@ -71,18 +71,23 @@ export async function searchTrack(title, artist, album, market = 'US') {
 
   const queryWithAlbum = `track:${title} artist:${artist} album:${album}`;
   const tracksWithAlbum = await search(queryWithAlbum);
+
+  // console.log("Tracks with album", tracksWithAlbum);
+
   let foundTrack = selectBestTrack(tracksWithAlbum);
 
   if (!foundTrack) {
-    console.error(`${title} by ${artist} not found with album. Trying without album...`);
+    // console.log(`${title} by ${artist} not found with album. Trying without album...`);
 
     const queryWithoutAlbum = `track:${title} artist:${artist}`;
     const tracksWithoutAlbum = await search(queryWithoutAlbum);
+
+    // console.log("Tracks without album", tracksWithoutAlbum);
+
     foundTrack = selectBestTrack(tracksWithoutAlbum);
   }
 
   if (foundTrack) {
-    console.log(`Found track: "${foundTrack.name}" by "${foundTrack.artists[0].name}"`);
     return {
       url: foundTrack.external_urls.spotify,
       preview_url: foundTrack.preview_url,
@@ -94,6 +99,9 @@ export async function searchTrack(title, artist, album, market = 'US') {
 }
 
 export async function searchMultipleTracks(tracksByYear) {
+
+  console.log("Spotify search started");
+
   const updatedTracksByYear = {};
 
   for (const [year, tracks] of Object.entries(tracksByYear)) {

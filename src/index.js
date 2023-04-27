@@ -9,11 +9,16 @@ import { updateUI } from "./UI";
 const usernameEntry = document.querySelector(".username")
 const datePicker = document.querySelector(".date");
 
-const goButton = document.querySelector(".go-button");
+const fetchButton = document.querySelector('.fetch.button');
+fetchButton.addEventListener("click", fetchTracks);
 
-goButton.addEventListener("click", main);
+const exportButton = document.querySelector('.export.button');
+exportButton.addEventListener("click", exportTracks);
 
-async function main() {
+let tracksData = new Set();
+let failedTracks = new Set();
+
+async function fetchTracks() {
     // Fetch tracks from Last.FM
     const username = usernameEntry.value;
     const datePicked = new Date(datePicker.value);
@@ -23,17 +28,43 @@ async function main() {
     console.log("Last.fm results ", tracksToSearch);
 
     // Search for tracks on Spotify
-    const searchResults = await searchMultipleTracks(tracksToSearch);
+    searchMultipleTracks(tracksToSearch)
+    .then(function (searchResults) {
 
-    console.log("Full Spotify Results", searchResults);
+      console.log("Spotify Results", searchResults);
 
-    // Update the UI with the search results
-    updateUI(searchResults);
+      // Update the UI with the search results
+      updateUI(searchResults);
+
+      // Add the data to tracksData so it can be exported
+      // Clear any previous links
+      tracksData.clear();
+
+      // Loop through each year
+      for (const year in searchResults) {
+        
+        // Loop through each track in the current year
+        for (const track of searchResults[year]) {
+
+          // Add to the set
+          if (track.url) {
+            tracksData.add(track.url);
+          } else {
+            failedTracks.add(`${track.title} - ${track.artist}`);
+          }
+        }
+      }
+    });
 }
 
-// Get All Tracks TEST CODE
-// const date = new Date("Sun Nov 27 2002 00:00:00 GMT+0000 (Greenwich Mean Time)");
+async function exportTracks() {
+  const tracksArray = Array.from(tracksData);
+  const exportString = tracksArray.join('\n');
 
-// getAllTracks("legendeater", date)
-// .then(result => console.log(result))
-// .catch(error => console.error(error));
+  console.log(exportString);
+
+  const failedTracksArray = Array.from(failedTracks);
+  const failedTracksString = failedTracksArray.join('\n');
+
+  console.log("The following tracks were not able to be found by Spotify:", '\n', failedTracksString);
+}
