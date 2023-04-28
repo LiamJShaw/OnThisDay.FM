@@ -4,7 +4,7 @@ import "./styles/styles.css";
 
 import {searchTrack, searchMultipleTracks } from "./spotify";
 import { getTracks, getAllTracks } from "./lastfm";
-import { updateUI, enableExportButton, disableExportButton } from "./UI";
+import { updateUI, enableExportButton, disableExportButton, showExportContainer, hideExportContainer } from "./UI";
 
 const usernameEntry = document.querySelector(".username")
 const datePicker = document.querySelector(".date");
@@ -20,46 +20,48 @@ let failedTracks = new Set();
 
 async function fetchTracks() {
 
-    disableExportButton();
+  // Reset previous runs
+  // hideExportContainer();
+  disableExportButton();
 
-    // Fetch tracks from Last.FM
-    const username = usernameEntry.value;
-    const datePicked = new Date(datePicker.value);
+  // Fetch tracks from Last.FM
+  const username = usernameEntry.value;
+  const datePicked = new Date(datePicker.value);
 
-    const tracksToSearch = await getAllTracks(username, datePicked);
+  const tracksToSearch = await getAllTracks(username, datePicked);
 
-    console.log("Last.fm results ", tracksToSearch);
+  console.log("Last.fm results ", tracksToSearch);
 
-    // Search for tracks on Spotify
-    searchMultipleTracks(tracksToSearch)
-    .then(function (searchResults) {
+  // Search for tracks on Spotify
+  searchMultipleTracks(tracksToSearch)
+  .then(function (searchResults) {
 
-      console.log("Spotify Results", searchResults);
+    console.log("Spotify Results", searchResults);
 
-      // Update the UI with the search results
-      updateUI(searchResults);
+    // Update the UI with the search results
+    updateUI(searchResults);
 
-      enableExportButton();
+    enableExportButton();
 
-      // Add the data to tracksData so it can be exported
-      // Clear any previous links
-      tracksData.clear();
+    // Add the data to tracksData so it can be exported
+    // Clear any previous links
+    tracksData.clear();
 
-      // Loop through each year
-      for (const year in searchResults) {
-        
-        // Loop through each track in the current year
-        for (const track of searchResults[year]) {
+    // Loop through each year
+    for (const year in searchResults) {
+      
+      // Loop through each track in the current year
+      for (const track of searchResults[year]) {
 
-          // Add to the set
-          if (track.url) {
-            tracksData.add(track.url);
-          } else {
-            failedTracks.add(`${track.title} - ${track.artist}`);
-          }
+        // Add to the set
+        if (track.url) {
+          tracksData.add(track.url);
+        } else {
+          failedTracks.add(`${track.title} - ${track.artist}`);
         }
       }
-    });
+    }
+  });
 }
 
 async function exportTracks() {
@@ -72,4 +74,8 @@ async function exportTracks() {
   const failedTracksString = failedTracksArray.join('\n');
 
   console.log("The following tracks were not able to be found by Spotify:", '\n', failedTracksString);
+
+  showExportContainer(exportString);
 }
+
+disableExportButton();

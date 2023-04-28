@@ -38,3 +38,22 @@ export function disableExportButton() {
     exportButton.disabled = true;
 }
 
+export function showExportContainer(exportString) {
+    const exportContainer = document.querySelector('.export-container');
+    const exportTextarea = document.querySelector('.export-textarea');
+
+    exportContainer.style.display = 'block';
+
+    // Set the text content in the textarea
+    exportTextarea.value = exportString;
+}
+
+export function hideExportContainer(exportString) {
+    const exportContainer = document.querySelector('.export-container');
+    const exportTextarea = document.querySelector('.export-textarea');
+
+    exportContainer.style.display = 'hidden';
+
+    // Set the text content in the textarea
+    exportTextarea.value = '';
+}
