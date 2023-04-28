@@ -4,7 +4,7 @@ import "./styles/styles.css";
 
 import {searchTrack, searchMultipleTracks } from "./spotify";
 import { getTracks, getAllTracks } from "./lastfm";
-import { updateUI } from "./UI";
+import { updateUI, enableExportButton, disableExportButton } from "./UI";
 
 const usernameEntry = document.querySelector(".username")
 const datePicker = document.querySelector(".date");
@@ -19,6 +19,9 @@ let tracksData = new Set();
 let failedTracks = new Set();
 
 async function fetchTracks() {
+
+    disableExportButton();
+
     // Fetch tracks from Last.FM
     const username = usernameEntry.value;
     const datePicked = new Date(datePicker.value);
@@ -35,6 +38,8 @@ async function fetchTracks() {
 
       // Update the UI with the search results
       updateUI(searchResults);
+
+      enableExportButton();
 
       // Add the data to tracksData so it can be exported
       // Clear any previous links

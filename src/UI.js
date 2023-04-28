@@ -27,5 +27,14 @@ export function updateUI(tracksByYear) {
     });
   }
   
-//   const exportButton = document.querySelector('.export.button');
-//   exportButton.disabled = true;
+
+const exportButton = document.querySelector('.export.button');
+
+export function enableExportButton() {
+    exportButton.disabled = false;
+}
+
+export function disableExportButton() {
+    exportButton.disabled = true;
+}
+
